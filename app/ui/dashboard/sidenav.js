@@ -6,7 +6,7 @@ import NavItem from "./nav-item"; // NavItem 컴포넌트
 import Dropdown from "./drop-down"; // Dropdown 컴포넌트
 import Image from "next/image";
 
-export default function SideNav({activeMenu, setActiveMenu}) {
+export default function SideNav({ activeMenu, setActiveMenu }) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     // const [activeMenu, setActiveMenu] = useState(""); // 현재 활성화된 메뉴를 추적
 
@@ -22,12 +22,12 @@ export default function SideNav({activeMenu, setActiveMenu}) {
         <div className="flex h-full flex-col px-3 py-4">
             <div className="flex flex-col justify-between space-y-4">
                 {/* 로고 섹션 */}
-                <div className="text-white bg-[#0067AC] h-48 flex items-end justify-center rounded-2xl p-4">
+                <div className="text-white bg-[#72B2DE] h-48 flex items-end justify-center rounded-2xl p-4 ">
                     <Logo />
                 </div>
 
                 {/* Q&A 메뉴 섹션 */}
-                <div className="bg-[#F4F4F4] h-20 rounded-2xl flex items-center justify-center">
+                <div className="bg-[#E1E1E1] h-20 rounded-2xl flex items-center justify-center ">
                     <NavItem
                         href="/qna"
                         icon="❓"
