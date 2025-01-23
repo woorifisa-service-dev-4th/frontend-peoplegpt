@@ -3,7 +3,7 @@ const classData = [
     "AI 엔지니어링",
     "클라우드 엔지니어링"
 ];
-const tagsData = [
+export const tagsData = [
     "이론",
     "실습",
     "프로젝트",
