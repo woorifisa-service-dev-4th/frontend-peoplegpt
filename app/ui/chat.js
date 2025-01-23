@@ -5,7 +5,10 @@ import { tagsData } from '../lib/data';
 export default function Chat({onSubmit, isComment}) {
     const [isOpen, setIsOpen] = useState(false);
     const [content, setContent] = useState("");
-  
+
+    const [currentTag, setCurrentTag] = useState("");
+    const isQnA = activeMenu === "qna";
+
     const handleSubmit = () => {
         if (content.trim() !== "") {
             onSubmit(content);
@@ -13,8 +16,10 @@ export default function Chat({onSubmit, isComment}) {
         }
     };  
 
-    const toggleDropdown = () => setIsOpen(!isOpen);
-
+    const toggleDropdown = () => {
+        setIsOpen(!isOpen);
+        console.log(isOpen);
+    }
     return (
         <div className="h-1/5 flex flex-col ">
             {/* 메시지 입력 영역 */}
@@ -30,30 +35,43 @@ export default function Chat({onSubmit, isComment}) {
             {/* 하단 영역 */}
             <div className={`flex items-center ${isComment ? 'justify-end' : 'justify-between'} p-4 bg-white`}>
                 {/* 해시태그 버튼 */}
-                {!isComment && 
-                    <div className="">
+
+                <div className="flex gap-2">
+                    {(!isComment && isQnA) && 
                         <button
                             onClick={toggleDropdown}
                             className="flex items-center justify-center w-10 h-10 border rounded-lg shadow-sm bg-gray-100 hover:bg-gray-200 focus:outline-none"
                         >
                             #
                         </button>
-
-                        {/* 드롭다운 */}
-                        {isOpen && (
-                            <div className="absolute bottom-full mb-2 w-40 bg-white border border-gray-300 rounded-lg shadow-lg">
-                                {tagsData.map((tag, index) => (
-                                    <p
-                                        key={index}
-                                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 "
-                                    >
-                                        #{tag}
-                                    </p>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                }
+                    }
+                
+                    {/* 태그 선택 */}
+                    {isOpen && (
+                        <div className="flex flex-row mb-2 w-50 bg-white border border-gray-300 rounded-lg shadow-lg">
+                            {tagsData.map((tag, index) => (
+                                <p
+                                    key={index}
+                                    className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 "
+                                    onClick={() => {
+                                        setCurrentTag(tag);
+                                        setIsOpen(false);
+                                    }}
+                                >
+                                    #{tag}
+                                </p>
+                            ))}
+                        </div>
+                    )}
+                    {/* 선택된 태그 */}
+                    {(currentTag && !isOpen) && (
+                        <div className="flex items-center gap-2">
+                            <p className="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg">
+                                {currentTag}
+                            </p>
+                        </div>
+                    )}
+                </div>
                 
 
                 {/* 전송 버튼 */}
