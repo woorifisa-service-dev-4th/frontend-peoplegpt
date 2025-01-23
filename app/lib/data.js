@@ -55,7 +55,7 @@ const postData = [
         class: classData[0],
         title: "What is React?",
         content: "React is a front-end library developed by Facebook. It is used for handling the view layer for web and mobile apps. React was created by Jordan Walke, a software engineer at Facebook. The first deployment was on Facebook's newsfeed in 2011 and on Instagram.com in 2012.",
-        tags: tagsData[0],
+        tags: [tagsData[0]],
         type: postType[0],
         status: status[0],
         createdAt: "2024.12.12",
@@ -66,7 +66,7 @@ const postData = [
         class: classData[1],
         title: "Introduction to Node.js",
         content: "Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine. It allows you to run JavaScript on the server-side. Node.js was created by Ryan Dahl in 2009, and its package ecosystem, npm, is the largest ecosystem of open source libraries in the world.",
-        tags: tagsData[1],
+        tags: [tagsData[1]],
         type: postType[0],
         status: status[0],        
         createdAt: "2024.12.13",
@@ -77,7 +77,7 @@ const postData = [
         class: classData[2],
         title: "Understanding Angular",
         content: "Angular is a platform for building mobile and desktop web applications. It is a TypeScript-based open-source web application framework led by the Angular Team at Google and by a community of individuals and corporations.",
-        tags: tagsData[2],
+        tags: [tagsData[2]],
         type: postType[1],
         status: status[0],        
         createdAt: "2024.12.14",
@@ -88,7 +88,7 @@ const postData = [
         class: classData[3],
         title: "Getting Started with Vue.js",
         content: "Vue.js is a progressive JavaScript framework for building user interfaces. It was created by Evan You, and is maintained by him and the rest of the active core team members. Vue is designed from the ground up to be incrementally adoptable.",
-        tags: tagsData[3],
+        tags: [tagsData[3]],
         type: postType[2],
         status: status[0],        
         createdAt: "2024.12.15",
@@ -99,7 +99,7 @@ const postData = [
         class: classData[4],
         title: "Exploring Svelte",
         content: "Svelte is a radical new approach to building user interfaces. Whereas traditional frameworks like React and Vue do the bulk of their work in the browser, Svelte shifts that work into a compile step that happens when you build your app.",
-        tags: tagsData[4],
+        tags: [tagsData[2], tagsData[1]],
         type: postType[0],
         status: status[0],        
         createdAt: "2024.12.16",
@@ -113,7 +113,7 @@ const commentData = [
         postId: 1,
         content: "This is a comment",
         createdAt: "2024.12.12",
-
+        status: status[0],        
     },
     {
         id: 2,
@@ -121,7 +121,7 @@ const commentData = [
         postId: 1,
         content: "This is a comment",
         createdAt: "2024.12.12",
-
+        status: status[0],        
     },    
     {
         id: 3,
@@ -129,7 +129,7 @@ const commentData = [
         postId: 1,
         content: "This is a comment",
         createdAt: "2024.12.12",
-
+        status: status[0],        
     }
 ]
 
@@ -153,7 +153,7 @@ export function fetchDailySummaryData() {
     return data;
 }
 
-export function fetchCommentByPostId(postsId) {
+export function fetchCommentByPostId(postId) {
     const data = commentData.filter((comment) => comment.postId === postId && comment.status === status[0]).sort((a, b) => b.createdAt - a.createdAt);
     return data;
 }
