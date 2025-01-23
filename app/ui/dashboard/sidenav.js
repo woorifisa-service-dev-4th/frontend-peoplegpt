@@ -29,7 +29,7 @@ export default function SideNav() {
                 {/* Q&A 메뉴 섹션 */}
                 <div className="bg-[#F4F4F4] h-20 rounded-2xl flex items-center justify-center">
                     <NavItem
-                        href="/dashboard/qna"
+                        href="/qna"
                         icon="❓"
                         label="Q&A"
                         active={activeMenu === "qna"} // 활성화된 메뉴 확인
@@ -57,7 +57,7 @@ export default function SideNav() {
 
                 {/* Code Share 메뉴 섹션 */}
                 <NavItem
-                    href="/dashboard/codeshare"
+                    href="/codeshare"
                     icon="🖥️"
                     label="Code Share"
                     active={activeMenu === "codeshare"} // 활성화된 메뉴 확인
@@ -66,7 +66,7 @@ export default function SideNav() {
 
                 {/* Daily Summary 메뉴 섹션 */}
                 <NavItem
-                    href="/dashboard/daily"
+                    href="/daily"
                     icon="📄"
                     label="Daily Summary"
                     active={activeMenu === "daily"} // 활성화된 메뉴 확인
