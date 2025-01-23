@@ -1,7 +1,5 @@
-"use client";
 import Chat from "../ui/chat";
 import SideNav from "../ui/dashboard/sidenav";
-import { useState } from "react";
 
 export default function Layout({ children }) {
     const [activeMenu, setActiveMenu] = useState('');  
@@ -16,6 +14,7 @@ export default function Layout({ children }) {
                 </div>
                 <div className="p-6 border-t bg-white">
                     <Chat activeMenu={activeMenu} setActiveMenu={setActiveMenu}/>
+                    <Chat />
                 </div>
             </div>
         </div>

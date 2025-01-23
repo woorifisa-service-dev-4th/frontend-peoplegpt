@@ -6,9 +6,9 @@ import NavItem from "./nav-item"; // NavItem 컴포넌트
 import Dropdown from "./drop-down"; // Dropdown 컴포넌트
 import Image from "next/image";
 
+
 export default function SideNav({activeMenu, setActiveMenu}) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    // const [activeMenu, setActiveMenu] = useState(""); // 현재 활성화된 메뉴를 추적
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
