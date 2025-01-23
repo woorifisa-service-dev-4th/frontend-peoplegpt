@@ -2,8 +2,16 @@
 import { useState } from 'react';
 import { tagsData } from '../lib/data';
 
-export default function Chat() {
+export default function Chat({onSubmit}) {
     const [isOpen, setIsOpen] = useState(false);
+    const [content, setContent] = useState("");
+  
+    const handleSubmit = () => {
+        if (content.trim() !== "") {
+            onSubmit(content);
+            setContent("");
+        }
+    };  
 
     const toggleDropdown = () => setIsOpen(!isOpen);
 
@@ -11,10 +19,12 @@ export default function Chat() {
         <div className="h-screen flex flex-col bg-gray-100">
             {/* 메시지 입력 영역 */}
             <div className="flex-1 p-4">
-                <textarea
+                <input
                     className="w-full h-full resize-none p-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Type your message here"
-                ></textarea>
+                    placeholder="Type your message here"`
+                    value={content}
+                    onChange={(e) => setComment(e.target.value)}
+                ></input>
             </div>
 
             {/* 하단 영역 */}
@@ -44,10 +54,14 @@ export default function Chat() {
                 </div>
 
                 {/* 전송 버튼 */}
-                <button className="px-6 py-3 text-white bg-blue-500 rounded-lg shadow-sm hover:bg-blue-600">
+                <button 
+                  className="px-6 py-3 text-white bg-blue-500 rounded-lg shadow-sm hover:bg-blue-600"
+                  onClick={handleSubmit}
+                >
                     Send
                 </button>
             </div>
+
         </div>
     );
 }
