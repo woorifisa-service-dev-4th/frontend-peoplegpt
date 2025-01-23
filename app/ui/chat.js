@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { tagsData } from '../lib/data';
 
-export default function Chat({onSubmit, isComment}) {
+export default function Chat({onSubmit, isComment, activeMenu, setActiveMenu}) {
     const [isOpen, setIsOpen] = useState(false);
     const [content, setContent] = useState("");
 
