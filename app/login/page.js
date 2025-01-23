@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React from 'react';
 
 const LoginPage = () => {
@@ -35,7 +36,9 @@ const LoginPage = () => {
               type="submit"
               className="w-full bg-white text-blue-600 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors duration-200"
             >
-              Login
+                <Link href="/qna">
+                    <span>Login</span>
+                </Link>                
             </button>
           </form>
         </div>

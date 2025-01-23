@@ -10,7 +10,7 @@ export const tagsData = [
     "기타"
 ];
 
-const postType = [
+export const postType = [
     'QnA',
     'CodeShare',
     'Daily'
@@ -138,8 +138,8 @@ export function fetchQnAData() {
     return data;
 }
 
-export function fetchQnAByClass(className) {
-    const data = postData.filter((post) => post.type === postType[0] && post.status === status[0] && post.class === className).sort((a, b) => b.createdAt - a.createdAt);
+export function fetchPostByType(postType) {
+    const data = postData.filter((post) => post.type === postType && post.status === status[0]).sort((a, b) => b.createdAt - a.createdAt);
     return data;
 }
 
