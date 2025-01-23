@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import ChatInput from "../chat";
+import Chat from "../chat";
 
 export default function CommentsBox({ initialComments = [] }) {
     const [comments, setComments] = useState(initialComments);
@@ -40,7 +40,7 @@ export default function CommentsBox({ initialComments = [] }) {
             </div>
 
             {/* 댓글 입력창 */}
-            <ChatInput onSubmit={addComment} />
+            <Chat onSubmit={addComment} />
         </div>
     );
 }
