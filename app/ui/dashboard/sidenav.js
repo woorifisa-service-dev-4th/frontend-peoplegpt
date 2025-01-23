@@ -15,7 +15,7 @@ export default function SideNav({activeMenu, setActiveMenu}) {
     };
 
     const handleMenuClick = (menu) => {
-        setActiveMenu(menu); // 메뉴 클릭 시 활성화된 메뉴 업데이트
+        setActiveMenu(menu);
     };
 
     return (
