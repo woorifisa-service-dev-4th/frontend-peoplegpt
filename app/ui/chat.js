@@ -2,10 +2,10 @@
 import { useState } from 'react';
 import { tagsData } from '../lib/data';
 
-export default function Chat({onSubmit, isComment}) {
+export default function Chat({onSubmit, isComment, activeMenu}) {
     const [isOpen, setIsOpen] = useState(false);
     const [content, setContent] = useState("");
-  
+    const isQnA = activeMenu === "qna";
     const handleSubmit = () => {
         if (content.trim() !== "") {
             onSubmit(content);
@@ -28,9 +28,9 @@ export default function Chat({onSubmit, isComment}) {
             </div>
 
             {/* 하단 영역 */}
-            <div className={`flex items-center ${isComment ? 'justify-end' : 'justify-between'} p-4 bg-white`}>
+            <div className={`flex items-center ${(!isComment && isQnA) ? 'justify-between' : 'justify-end'} p-4 bg-white`}>
                 {/* 해시태그 버튼 */}
-                {!isComment && 
+                {(!isComment && isQnA) && 
                     <div className="">
                         <button
                             onClick={toggleDropdown}
