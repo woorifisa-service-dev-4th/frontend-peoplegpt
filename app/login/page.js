@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
@@ -7,8 +8,8 @@ const LoginPage = () => {
       {/* Nav */}
       <nav className="w-full py-6">
         <div className="flex items-center justify-center">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-white rounded-full"></div>
+          <div className="flex items-center space-x-2 mt-20">
+            <Image src="/logo.png" alt="Logo" width={40} height={49} />
             <span className="text-white text-2xl font-bold">peopleGPT</span>
           </div>
         </div>
@@ -37,7 +38,7 @@ const LoginPage = () => {
               className="w-full bg-white text-blue-600 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors duration-200"
             >
                 <Link href="/qna">
-                    <span>Login</span>
+                    Login
                 </Link>                
             </button>
           </form>
