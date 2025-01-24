@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Chat from "../chat";
 import { fetchCommentByPostId, fetchPostByPostId} from "@/app/lib/data";
 
+
 export default function CommentsBox({ onClose, postId }) {
     const comments = fetchCommentByPostId(postId);
     const postDetail = fetchPostByPostId(postId);
@@ -39,6 +40,7 @@ export default function CommentsBox({ onClose, postId }) {
             </div>
 
             {/* 모바일에서만 보이는 게시글 */}
+
             <div className="md:hidden h-auto p-2 pt-0 rounded-xl bg-gray-50 shadow-sm">
                 <div className="flex p-3">
                     <h3 className="text-sm font-semibold">{postDetail.title}</h3>
