@@ -1,13 +1,10 @@
-import { fetchPostByTypeDB } from "@/app/lib/actions";
-import { fetchCommentByPostId, fetchPostByType } from "@/app/lib/data";
-import { getQnATester } from "@/app/lib/actions";
+import { getPosts } from "@/app/lib/actions";
 import CommentsBox from "@/app/ui/dashboard/comments";
 
 export default async function Cards({postType,
-    isCommentsOpen, setIsCommentsOpen, openPostId, setOpenPostId
+    isCommentsOpen, setIsCommentsOpen, openPostId, setOpenPostId, classType
 }) {
-
-    const cardsData = await getQnATester(postType);
+    const cardsData = await getPosts(postType, classType);
     const toggleOpen = () => {
         setIsCommentsOpen(true);
     };

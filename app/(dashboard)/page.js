@@ -1,6 +1,5 @@
 'use client'
 
-import { postType } from "@/app/lib/data";
 import Cards from "@/app/ui/dashboard/cards";
 import { Suspense } from "react";
 import { PostSkeleton } from "../ui/skeleton";
