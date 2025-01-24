@@ -13,13 +13,15 @@ export default function Page() {
         <div className="relative">
             <Suspense fallback={<PostSkeleton />}>
                 <Cards 
-                    postType={2} 
+                    postType={0} 
                     isCommentsOpen={isCommentsOpen} 
                     setIsCommentsOpen={setIsCommentsOpen} 
                     openPostId={openPostId}
                     setOpenPostId={setOpenPostId}
+                    classType={0}
                 />
             </Suspense>
         </div>
     );
 }
+

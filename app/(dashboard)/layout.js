@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import Chat from "../ui/chat";
 import MobileNav from "../ui/dashboard/mobile-nav";
 import SideNav from "../ui/dashboard/sidenav";
-import { useRouter } from "next/router";
 
 export default function Layout({ children }) {
     const [activeMenu, setActiveMenu] = useState("Q&A");
+    const [classType, setClassType] = useState(0);
     const [isMobileNavVisible, setIsMobileNavVisible] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
 
@@ -46,6 +46,7 @@ export default function Layout({ children }) {
             {/* 사이드바 (lg 이상에서만 보임) */}
             <div className="hidden lg:block lg:w-[25%] bg-[#F0F0F0]">
                 <SideNav
+                    setClassType={setClassType}
                     activeMenu={activeMenu}
                     setActiveMenu={setActiveMenu}
                 />

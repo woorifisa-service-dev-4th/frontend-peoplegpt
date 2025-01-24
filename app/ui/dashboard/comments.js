@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import Chat from "../chat";
 import { fetchCommentByPostId, fetchPostByPostId} from "@/app/lib/data";
 
-
 export default function CommentsBox({ onClose, postId }) {
-    const comments = fetchCommentByPostId(postId);
+    const [comments, setComments] = useState([]);
+    setComments(fetchCommentByPostId(postId));
     const postDetail = fetchPostByPostId(postId);
     const commentsRef = useRef(null);
 

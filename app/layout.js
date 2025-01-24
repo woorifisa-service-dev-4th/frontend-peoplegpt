@@ -14,8 +14,8 @@ export default function RootLayout({ children }) {
     <html lang="kr" className={`${pretendard.variable}`}>
       <body
         className={`${pretendard.variable}`}
-      >        
-        {children}
+      >
+          {children}
       </body>
     </html>
   );
