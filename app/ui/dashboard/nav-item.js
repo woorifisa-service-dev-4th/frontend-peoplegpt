@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 
-export default function NavItem({ href, icon, label, active, onClick }) {
+export default function NavItem({
+    href,
+    icon,
+    label,
+    active,
+    onClick,
+    button,
+}) {
     return (
         <Link href={href}>
             <div
@@ -12,6 +19,7 @@ export default function NavItem({ href, icon, label, active, onClick }) {
                 onClick={onClick}
             >
                 {icon} {label}
+                {button}
             </div>
         </Link>
     );
