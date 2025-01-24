@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Logo from "../logo";
-import NavItem from "./nav-item"; // NavItem 컴포넌트
-import Dropdown from "./drop-down"; // Dropdown 컴포넌트
+import NavItem from "./nav-item";
+import Dropdown from "./drop-down";
 import Image from "next/image";
 
 export default function SideNav({ activeMenu, setActiveMenu }) {
@@ -17,36 +17,34 @@ export default function SideNav({ activeMenu, setActiveMenu }) {
         setActiveMenu(menu);
     };
 
+    const btn = (
+        <button onClick={toggleDropdown} className="bg-transparent p-2">
+            <Image
+                src="/dropdown-icon.png"
+                alt="Dropdown"
+                width={10}
+                height={15}
+            />
+        </button>
+    );
+
     return (
         <div className="flex h-full flex-col px-3 py-4">
             <div className="flex flex-col justify-between space-y-4">
                 {/* 로고 섹션 */}
-                <div className="text-white bg-[#72B2DE] h-48 flex items-end justify-center rounded-2xl p-4">
-                    <Logo />
+                <div className="text-white bg-[#72B2DE] h-48 flex items-center justify-center rounded-2xl p-4">
+                    <Logo setActiveMenu={setActiveMenu} />{" "}
                 </div>
 
                 {/* Q&A 메뉴 섹션 */}
-                <div className="bg-[#E1E1E1] h-20 rounded-2xl flex items-center justify-center">
-                    <NavItem
-                        href="/qna"
-                        icon="❓"
-                        label="Q&A"
-                        active={activeMenu === "qna"} // 활성화된 메뉴 확인
-                        onClick={() => handleMenuClick("qna")} // 클릭 시 활성화된 메뉴 변경
-                    />
-                    {/* 드롭다운 버튼 */}
-                    <button
-                        onClick={toggleDropdown}
-                        className="bg-transparent p-2"
-                    >
-                        <Image
-                            src="/dropdown-icon.png"
-                            alt="Dropdown"
-                            width={10}
-                            height={15}
-                        />
-                    </button>
-                </div>
+                <NavItem
+                    href="/qna"
+                    icon="❓"
+                    label="Q&A"
+                    active={activeMenu === "qna"}
+                    onClick={() => handleMenuClick("qna")}
+                    button={btn}
+                />
 
                 {/* 드롭다운 메뉴 */}
                 <Dropdown
@@ -59,8 +57,8 @@ export default function SideNav({ activeMenu, setActiveMenu }) {
                     href="/codeshare"
                     icon="🖥️"
                     label="Code Share"
-                    active={activeMenu === "codeshare"} // 활성화된 메뉴 확인
-                    onClick={() => handleMenuClick("codeshare")} // 클릭 시 활성화된 메뉴 변경
+                    active={activeMenu === "codeshare"}
+                    onClick={() => handleMenuClick("codeshare")}
                 />
 
                 {/* Daily Summary 메뉴 섹션 */}
@@ -68,8 +66,8 @@ export default function SideNav({ activeMenu, setActiveMenu }) {
                     href="/daily"
                     icon="📄"
                     label="Daily Summary"
-                    active={activeMenu === "daily"} // 활성화된 메뉴 확인
-                    onClick={() => handleMenuClick("daily")} // 클릭 시 활성화된 메뉴 변경
+                    active={activeMenu === "daily"}
+                    onClick={() => handleMenuClick("daily")}
                 />
             </div>
         </div>
