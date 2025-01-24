@@ -1,14 +1,13 @@
-'use client';
-
-import { fetchCommentByPostId, fetchPostByType, postType } from "@/app/lib/data";
+import { fetchPostByTypeDB } from "@/app/lib/actions";
+import { fetchCommentByPostId, fetchPostByType } from "@/app/lib/data";
+import { getQnATester } from "@/app/lib/actions";
 import CommentsBox from "@/app/ui/dashboard/comments";
-import {  useState } from "react";
 
-export default function Cards({whatClass}) {
-    const cardsData = fetchPostByType(whatClass);
-    const [isCommentsOpen, setIsCommentsOpen] = useState(false);
-    const [openPostId, setOpenPostId] = useState(null);
+export default async function Cards({postType,
+    isCommentsOpen, setIsCommentsOpen, openPostId, setOpenPostId
+}) {
 
+    const cardsData = await getQnATester(postType);
     const toggleOpen = () => {
         setIsCommentsOpen(true);
     };
@@ -26,13 +25,13 @@ export default function Cards({whatClass}) {
                     postId={card.id}
                     title={card.title}
                     content={card.content}
-                    tags={card.tags}
-                    createAt={card.createAt}
-                    commentCount={fetchCommentByPostId(card.id).length}
+                    tag={card.tag_id}
+                    createAt={card.created_at}
+                    commentCount={1}
                     isCommentsOpen={isCommentsOpen}
                     toggleOpen={toggleOpen}
                     setOpenPostId={setOpenPostId}
-                    whatClass={whatClass}
+                    postType={postType}
                 />
             ))}
             {isCommentsOpen && <CommentsBox onClose={toggleClose} postId={openPostId}/>}
@@ -41,8 +40,8 @@ export default function Cards({whatClass}) {
     );
 }
 
-function Card({postId, title, content, tags, createdAt, commentCount, toggleOpen, setOpenPostId, whatClass}) {
-    const isCodeShare = whatClass === postType[1];
+function Card({postId, title, content, tag, createdAt, commentCount, toggleOpen, setOpenPostId, postType}) {
+    const isCodeShare = Number(postType) === Number(1);
     return (
         <div>
             <div className="rounded-xl bg-gray-50 p-2 shadow-sm">
@@ -63,14 +62,11 @@ function Card({postId, title, content, tags, createdAt, commentCount, toggleOpen
                     {!isCodeShare && 
                         <>
                             <div className="px-3 flex justify-start gap-2">
-                            {tags.map((tag, index) => (
                                 <p
-                                    key={index}
                                     className={`flex rounded-xl px-2 py-1 bg-pink-500 text-m`}
                                 >
                                     #{tag}
                                 </p>
-                            ))}
                             </div>
                             <p className={`px-3 text-gray-500 text-m`}>
                                 {createdAt}
