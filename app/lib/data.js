@@ -158,6 +158,11 @@ export function fetchCommentByPostId(postId) {
     return data;
 }
 
+export function fetchPostByPostId(postId) {
+    const data = postData.find((post) => post.id === postId && post.status === status[0]);
+    return data;
+}
+
 export function isUserAdmin(email) {
     const user = user.find((user) => user.email === email);
     return user.role === "admin";

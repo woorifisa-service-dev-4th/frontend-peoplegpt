@@ -2,21 +2,20 @@
 
 import { useEffect, useRef, useState } from "react";
 import Chat from "../chat";
-import { fetchCommentByPostId} from "@/app/lib/data";
+import { fetchCommentByPostId, fetchPostByPostId} from "@/app/lib/data";
+
 
 export default function CommentsBox({ onClose, postId }) {
     const comments = fetchCommentByPostId(postId);
+    const postDetail = fetchPostByPostId(postId);
     const commentsRef = useRef(null);
 
     const addComment = (newComment) => {
-        // 각 게시물 별로 받아야 하니까 배열에 게시물 id 추가
         const timestamp = new Date().toLocaleString("ko-KR", {
-            // 시간 표시
             year: "numeric",
             month: "2-digit",
             day: "2-digit",
         });
-        // 댓글 입력한 사용자 id까지 받는 걸로 수정
         setComments((prev) => [
             ...prev,
             { content: newComment, time: timestamp },
@@ -41,13 +40,31 @@ export default function CommentsBox({ onClose, postId }) {
             </div>
 
             {/* 모바일에서만 보이는 게시글 */}
-            <div className="md:hidden h-auto p-4 border-b border-gray-200">
-                <h3 className="text-xl font-bold">게시글{/*post.title*/}</h3>
-                <p className="text-xl">React is a front-end library developed by Facebook.
-                    It is used for handling the view layer for web and mobile apps.
-                    React was created by Jordan Walke, a software engineer at Facebook.
-                    The first deployment was on Facebook's newsfeed in 2011 and on Instagram.com
-                    in 2012.{/*post.content*/}</p>
+
+            <div className="md:hidden h-auto p-2 pt-0 rounded-xl bg-gray-50 shadow-sm">
+                <div className="flex p-3">
+                    <h3 className="text-sm font-semibold">{postDetail.title}</h3>
+                </div> 
+                <div className="gap-3 grid">
+                    <p
+                        className={`rounded-xl bg-white p-3 text-sm text-gray-700 break-all`}
+                    >
+                        {postDetail.content}
+                    </p>
+                    <div className="px-3 flex justify-start gap-2">
+                        {postDetail.tags.map((tag, index) => (
+                            <p
+                                key={index}
+                                className={`flex rounded-xl px-2 py-1 bg-pink-500 text-sm`}
+                            >
+                                #{tag}
+                            </p>
+                        ))}
+                    </div>
+                    <p className={`px-3 text-gray-500 text-sm`}>
+                        {postDetail.createdAt}
+                    </p>
+                </div>
             </div>
 
             {/* 댓글 목록 */}
