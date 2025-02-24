@@ -1,0 +1,10 @@
+@import './styles/fonts.css';
+
+body {
+    margin: 0;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+}
+
+#root {
+    height: 100vh;
+}
