@@ -19,12 +19,19 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
+  
+    // 유효성 검사
+    if (!email || !password) {
+      setError('이메일과 비밀번호를 모두 입력해주세요');
+      return;
+    }
+  
     try {
+      console.log('Submitting login with:', { email, password });
       await login({ email, password });
-      navigate('/dashboard/qna');
     } catch (err) {
-      setError('Invalid email or password');
+      console.error('Login error:', err);
+      setError(err.message || '로그인에 실패했습니다');
     }
   };
 
