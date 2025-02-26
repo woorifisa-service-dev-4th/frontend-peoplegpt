@@ -1,37 +1,37 @@
 // src/pages/login/_page.jsx
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login, isAuthenticated } = useAuth();
+  const [message, setMessage] = useState('');
+  const { login, isAuthenticated, isLoggingIn } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
+    // 회원가입 성공 메시지 표시
+    if (location.state?.message) {
+      setMessage(location.state.message);
+    }
+    
     if (isAuthenticated) {
       navigate('/dashboard/qna');
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-  
-    // 유효성 검사
-    if (!email || !password) {
-      setError('이메일과 비밀번호를 모두 입력해주세요');
-      return;
-    }
-  
+    setMessage('');
+
     try {
-      console.log('Submitting login with:', { email, password });
       await login({ email, password });
     } catch (err) {
-      console.error('Login error:', err);
-      setError(err.message || '로그인에 실패했습니다');
+      setError(err.message || '이메일 또는 비밀번호가 올바르지 않습니다');
     }
   };
 
@@ -43,8 +43,14 @@ const LoginPage = () => {
             <img src="/logo.png" alt="Logo" className="w-10 h-12" />
           </div>
           <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
-            Sign in to PeopleGPT
+            로그인
           </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            계정이 없으신가요?{' '}
+            <Link to="/signup" className="font-medium text-blue-600 hover:text-blue-500">
+              회원가입하기
+            </Link>
+          </p>
         </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -54,9 +60,15 @@ const LoginPage = () => {
             </div>
           )}
           
+          {message && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative text-center" role="alert">
+              <span className="block sm:inline">{message}</span>
+            </div>
+          )}
+          
           <div className="rounded-md shadow-sm space-y-4">
             <div>
-              <label htmlFor="email" className="sr-only">Email address</label>
+              <label htmlFor="email" className="sr-only">이메일 주소</label>
               <input
                 id="email"
                 name="email"
@@ -66,12 +78,12 @@ const LoginPage = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
+                placeholder="이메일 주소"
               />
             </div>
             
             <div>
-              <label htmlFor="password" className="sr-only">Password</label>
+              <label htmlFor="password" className="sr-only">비밀번호</label>
               <input
                 id="password"
                 name="password"
@@ -81,7 +93,7 @@ const LoginPage = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
+                placeholder="비밀번호"
               />
             </div>
           </div>
@@ -89,9 +101,10 @@ const LoginPage = () => {
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              disabled={isLoggingIn}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-400 disabled:cursor-not-allowed"
             >
-              Sign in
+              {isLoggingIn ? '로그인 중...' : '로그인'}
             </button>
           </div>
         </form>
