@@ -1,17 +1,43 @@
-// src/components/Comments.jsx
-import { useEffect, useRef, useState } from "react";
-import { useComments, usePosts } from "../hooks/usePosts";
+import { useRef } from "react";
+import { useComments, usePost } from "../hooks/usePosts";
 import Chat from "./Chat";
 
 export default function Comments({ onClose, postId }) {
     const commentsRef = useRef(null);
-    const { data: comments, isLoading: commentsLoading } = useComments(postId);
-    const { data: postDetail, isLoading: postLoading } = usePosts(postId);
+    
+    // Use the updated hooks - now separate hooks for post and comments
+    const { data: comments, isLoading: commentsLoading, error: commentsError } = useComments(postId);
+    const { data: postDetail, isLoading: postLoading, error: postError } = usePost(postId);
 
+    // Loading state
     if (commentsLoading || postLoading) {
         return (
             <div className="fixed inset-0 z-50 flex flex-col bg-white w-full md:w-[25%] h-full md:border md:top-0 md:left-0">
-                <div className="p-4">Loading...</div>
+                <div className="flex items-center justify-center h-full">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mx-auto"></div>
+                        <p className="mt-4">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Error state
+    if (commentsError || postError) {
+        return (
+            <div className="fixed inset-0 z-50 flex flex-col bg-white w-full md:w-[25%] h-full md:border md:top-0 md:left-0">
+                <div className="flex items-center justify-center h-full">
+                    <div className="text-center text-red-500">
+                        <p>Error: {commentsError?.message || postError?.message}</p>
+                        <button 
+                            onClick={onClose}
+                            className="mt-4 px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -60,22 +86,28 @@ export default function Comments({ onClose, postId }) {
                 className="flex-1 overflow-y-auto space-y-5 flex flex-col items-center py-4" 
                 ref={commentsRef}
             >
-                {comments?.map((comment) => (
-                    <div
-                        key={comment.id}
-                        className="bg-gray-100 p-4 rounded-2xl w-5/6"
-                    >
-                        <p className="text-sm font-semibold">
-                            {comment.user_id}
-                        </p>
-                        <p className="text-sm text-gray-700 break-all">
-                            {comment.content}
-                        </p>
-                        <p className="text-xs text-gray-400">
-                            {comment.created_at}
-                        </p>
+                {comments && comments.length > 0 ? (
+                    comments.map((comment) => (
+                        <div
+                            key={comment.id}
+                            className="bg-gray-100 p-4 rounded-2xl w-5/6"
+                        >
+                            <p className="text-sm font-semibold">
+                                {comment.user_id}
+                            </p>
+                            <p className="text-sm text-gray-700 break-all">
+                                {comment.content}
+                            </p>
+                            <p className="text-xs text-gray-400">
+                                {comment.created_at}
+                            </p>
+                        </div>
+                    ))
+                ) : (
+                    <div className="text-center text-gray-500">
+                        No comments yet. Be the first to comment!
                     </div>
-                ))}
+                )}
             </div>
 
             {/* Comment Input */}
