@@ -8,7 +8,7 @@ export default function CodeSharePage() {
 
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error loading posts</div>;
-
+    console.log(posts);
     return (
         <div className="grid gap-4">
             {posts.map((post) => (

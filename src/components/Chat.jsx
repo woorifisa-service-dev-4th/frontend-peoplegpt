@@ -1,50 +1,49 @@
 import { useState } from "react";
 import { useCreatePost, useCreateComment } from "../hooks/usePosts";
-import { TAGS } from "../lib/constants"; // Assuming you have this import
+import { POST_TYPES, TAGS, USER_ROLES } from "../lib/constants";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Chat({
-    isComment = false,
     activeMenu,
     setActiveMenu,
-    postId
+    postId = null,
+    isComment = false
 }) {
     const [isOpen, setIsOpen] = useState(false);
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [currentTag, setCurrentTag] = useState("");
     
-    // Get the current path to determine post type
-    let postTypeName = '';
-    if (typeof window !== 'undefined') {
-      const pathname = window.location.pathname;
-      postTypeName = pathname.split("/")[1]; // Extract the first part of the path
-    }
-    
-    // Determine post type number from name
-    let postType = 0;
-    if (postTypeName === "qna") {
-        postType = 1;
-    } else if (postTypeName === "codeshare") {
-        postType = 2;
-    } else if (postTypeName === "daily") {
-        postType = 3;
-    }
-    
-    // Class type (assuming this is needed, set default to 1)
-    const classType = 1;
-    
-    // Use the mutation hooks
+    const { user } = useAuth();
     const createPostMutation = useCreatePost();
     const createCommentMutation = useCreateComment();
-    
+
+    // Determine if user can create posts in current category
+    const canCreatePost = () => {
+        if (activeMenu === String(POST_TYPES.QNA).toLowerCase()) {
+            return true;
+        }
+        
+        // Only MENTOR and ADMIN can create posts in CODESHARE and DAILY
+        if (
+            (activeMenu === String(POST_TYPES.CODESHARE).toLowerCase() || 
+             activeMenu === String(POST_TYPES.DAILY).toLowerCase()) && 
+            (user?.role === USER_ROLES.MENTOR || user?.role === USER_ROLES.ADMIN)
+        ) {
+            return true;
+        }
+        
+        return false;
+    };
+
     const handleSubmit = () => {
         if (isComment) {
-            // Handle comment submission
+            // Submit as a comment
             if (content.trim() !== "" && postId) {
                 const commentData = {
-                    content: content,
-                    // Add user ID - this would normally come from auth context
-                    user_id: 1 
+                    postId: postId,
+                    userId: user.id,
+                    content: content
                 };
                 
                 createCommentMutation.mutate({
@@ -56,18 +55,20 @@ export default function Chat({
                     }
                 });
             }
-        } else {
-            // Handle post submission
-            if (content.trim() !== "" && title.trim() !== "") {
+        } else if (canCreatePost()) {
+            // Submit as a post
+            if (title.trim() === "" || content.trim() === "") return;
+            
+            const category = activeMenu.toUpperCase();
+            
+            if (category === String(POST_TYPES.QNA)) {
                 const postData = {
+                    userId: user.id,
                     title: title,
                     content: content,
-                    type: postType,
-                    category: activeMenu, // Use activeMenu as category
-                    tag_id: currentTag,
-                    class_id: classType,
-                    // Add user ID - this would normally come from auth context
-                    user_id: 1
+                    category: category,
+                    tag: currentTag || TAGS.OTHER,
+                    filter: null // Will default to ALL
                 };
                 
                 createPostMutation.mutate(postData, {
@@ -77,19 +78,37 @@ export default function Chat({
                         setCurrentTag("");
                     }
                 });
+            } else {
+                // For CODESHARE or DAILY
+                const postData = {
+                    userId: user.id,
+                    title: title,
+                    content: content,
+                    category: category
+                };
+                
+                createPostMutation.mutate(postData, {
+                    onSuccess: () => {
+                        setTitle("");
+                        setContent("");
+                    }
+                });
             }
         }
     };
-    
+
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
     };
-    
-    const isQnA = activeMenu === "qna";
-    
+
+    // If user can't create posts in this category, don't show the chat component
+    if (!isComment && !canCreatePost()) {
+        return null;
+    }
+
     return (
-        <div className="h-1/5 flex flex-col">
-            {/* Message input area */}
+        <div className="h-1/5 flex flex-col ">
+            {/* 메시지 입력 영역 */}
             <div className="flex-1 px-2">
                 {!isComment && (
                     <textarea
@@ -101,21 +120,21 @@ export default function Chat({
                 )}
                 <textarea
                     className="w-full h-4/6 resize-none p-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder={isComment ? "Type your comment here" : "Type your message here"}
+                    placeholder={isComment ? "Add a comment..." : "Type your message here"}
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                 ></textarea>
             </div>
 
-            {/* Bottom area */}
+            {/* 하단 영역 */}
             <div
                 className={`flex items-center ${
                     isComment ? "justify-end" : "justify-between"
                 } p-4 bg-white`}
             >
-                {/* Tag button */}
+                {/* 해시태그 버튼 */}
                 <div className="flex gap-2">
-                    {!isComment && isQnA && (
+                    {!isComment && activeMenu === String(POST_TYPES.QNA).toLowerCase() && (
                         <button
                             onClick={toggleDropdown}
                             className="flex items-center justify-center w-10 h-10 border rounded-lg shadow-sm bg-gray-100 hover:bg-gray-200 focus:outline-none"
@@ -124,25 +143,25 @@ export default function Chat({
                         </button>
                     )}
 
-                    {/* Tag selection */}
+                    {/* 태그 선택 */}
                     {isOpen && (
                         <div className="flex flex-row mb-2 w-50 bg-white border border-gray-300 rounded-lg shadow-lg">
                             {Object.values(TAGS).map((tag, index) => (
                                 <p
-                                key={index}
-                                className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                                onClick={() => {
-                                    setCurrentTag(tag);
-                                    setIsOpen(false);
-                                }}
+                                    key={index}
+                                    className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                                    onClick={() => {
+                                        setCurrentTag(tag);
+                                        setIsOpen(false);
+                                    }}
                                 >
-                                #{tag}
+                                    #{tag}
                                 </p>
                             ))}
                         </div>
                     )}
                     
-                    {/* Selected tag */}
+                    {/* 선택된 태그 */}
                     {currentTag && !isOpen && (
                         <div className="flex items-center gap-2">
                             <p className="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg">
@@ -152,15 +171,19 @@ export default function Chat({
                     )}
                 </div>
 
-                {/* Send button */}
+                {/* 전송 버튼 */}
                 <button
                     className={`px-6 py-3 text-white bg-blue-500 rounded-lg shadow-sm hover:bg-blue-600 ${
-                        createPostMutation.isPending || createCommentMutation.isPending 
-                            ? "opacity-70" 
+                        (isComment && content.trim() === "") || 
+                        (!isComment && (title.trim() === "" || content.trim() === ""))
+                            ? "opacity-50 cursor-not-allowed"
                             : ""
                     }`}
                     onClick={handleSubmit}
-                    disabled={createPostMutation.isPending || createCommentMutation.isPending}
+                    disabled={
+                        (isComment && content.trim() === "") || 
+                        (!isComment && (title.trim() === "" || content.trim() === ""))
+                    }
                 >
                     {createPostMutation.isPending || createCommentMutation.isPending 
                         ? "Sending..." 
