@@ -1,93 +1,90 @@
-// src/components/SideNav.jsx
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
-import NavItem from "./NavItem";
-import Dropdown from "./Dropdown";
+import { Link } from "react-router-dom";
+import { CLASS_TYPES, POST_TYPES } from "../lib/constants";
 
-export default function SideNav({ activeMenu, setActiveMenu, setClassType }) {
+export default function SideNav({ activeMenu, setActiveMenu, setClassType, user }) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const { logout } = useAuth();
-    const navigate = useNavigate();
 
-    const toggleDropdown = (e) => {
-        e?.preventDefault();
+    const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
-    const handleMenuClick = (menu) => {
-        setActiveMenu(menu);
-        navigate(`/dashboard/${menu}`);
-    };
-
-    const handleClassTypeSelect = (item) => {
-        const classTypes = ["전체", "AI", "서비스", "클라우드"];
-        setClassType(classTypes.indexOf(item));
+    const handleFilterClick = (filterValue) => {
+        setClassType(filterValue);
         setIsDropdownOpen(false);
     };
 
-    const dropdownButton = (
-        <button 
-            onClick={toggleDropdown} 
-            className="bg-transparent p-2"
-        >
-            <img
-                src="/dropdown-icon.png"
-                alt="Dropdown"
-                className="w-4 h-4"
-            />
-        </button>
-    );
+    const isQnA = String(activeMenu).toLowerCase() === String(POST_TYPES.QNA).toLowerCase();
 
     return (
         <div className="flex h-full flex-col px-3 py-4">
             <div className="flex flex-col justify-between space-y-4">
                 {/* Logo Section */}
                 <div className="text-white bg-[#72B2DE] h-48 flex items-center justify-center rounded-2xl p-4">
-                    <h1 className="text-2xl font-bold">peopleGPT</h1>
+                    <Link to="/dashboard/qna" className="text-3xl font-bold">
+                        PeopleGPT
+                    </Link>
                 </div>
 
-                {/* Navigation Items */}
-                <div className="relative">
-                    <NavItem
-                        href="/dashboard/qna"
-                        icon="❓"
-                        label="Q&A"
-                        active={activeMenu === "qna"}
-                        onClick={() => handleMenuClick("qna")}
-                        button={dropdownButton}
-                    />
-
-                    <Dropdown
-                        isOpen={isDropdownOpen}
-                        items={["전체", "AI", "서비스", "클라우드"]}
-                        onItemClick={handleClassTypeSelect}
-                    />
-                </div>
-
-                <NavItem
-                    href="/dashboard/codeshare"
-                    icon="🖥️"
-                    label="Code Share"
-                    active={activeMenu === "codeshare"}
-                    onClick={() => handleMenuClick("codeshare")}
-                />
-
-                <NavItem
-                    href="/dashboard/daily"
-                    icon="📄"
-                    label="Daily Summary"
-                    active={activeMenu === "daily"}
-                    onClick={() => handleMenuClick("daily")}
-                />
-
-                {/* Logout Button */}
-                <button
-                    onClick={logout}
-                    className="mt-auto p-4 text-red-500 hover:bg-red-50 rounded-xl transition-colors"
+                {/* Q&A Menu Section */}
+                <div 
+                    className={`bg-[#E1E1E1] h-20 rounded-2xl flex items-center justify-between cursor-pointer px-10 
+                    ${isQnA ? "text-[#0067AC] font-bold" : "text-black"}`}
                 >
-                    Logout
-                </button>
+                    <Link 
+                        to="/dashboard/qna" 
+                        className="flex-grow"
+                        onClick={() => setActiveMenu("qna")}
+                    >
+                        ❓ Q&A
+                    </Link>
+                    <button onClick={toggleDropdown} className="bg-transparent p-2">
+                        <span className="text-xl">▼</span>
+                    </button>
+                </div>
+
+                {/* Filter Dropdown Menu */}
+                {isDropdownOpen && isQnA && (
+                    <div className="flex flex-col items-end space-y-2 w-full ml-auto">
+                        {Object.entries(CLASS_TYPES).map(([key, value]) => (
+                            <div
+                                key={key}
+                                className="text-black bg-[#E1E1E1] h-14 w-4/5 rounded-2xl flex items-center justify-center cursor-pointer hover:bg-[#D1D1D1]"
+                                onClick={() => handleFilterClick(value)}
+                            >
+                                {value}
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* Code Share Menu Section */}
+                <div 
+                    className={`bg-[#E1E1E1] h-20 rounded-2xl flex items-center justify-center cursor-pointer px-10 
+                    ${activeMenu === String(POST_TYPES.CODESHARE).toLowerCase() ? "text-[#0067AC] font-bold" : "text-black"}`}
+                >
+                    <Link 
+                        to="/dashboard/codeshare" 
+                        className="w-full text-center"
+                        onClick={() => setActiveMenu("codeshare")}
+                    >
+                        🖥️ Code Share
+                    </Link>
+                </div>
+
+                {/* Daily Summary Menu Section */}
+                <div 
+                    className={`bg-[#E1E1E1] h-20 rounded-2xl flex items-center justify-center cursor-pointer px-10 
+                    ${activeMenu === String(POST_TYPES.DAILY).toLowerCase() ? "text-[#0067AC] font-bold" : "text-black"}`}
+                >
+                    <Link 
+                        to="/dashboard/daily" 
+                        className="w-full text-center"
+                        onClick={() => setActiveMenu("daily")}
+                    >
+                        📄 Daily Summary
+                    </Link>
+                </div>
             </div>
         </div>
     );

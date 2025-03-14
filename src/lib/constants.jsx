@@ -1,10 +1,16 @@
 // src/lib/constants.js
 export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
+export const USER_ROLES = {
+  ADMIN: 'admin',
+  MENTOR: 'mentor',
+  STUDENT: 'student',
+};
+
 export const POST_TYPES = {
-  QNA: 1,
-  CODE_SHARE: 2,
-  DAILY: 3,
+  QNA: 'QNA',
+  CODE_SHARE: 'CODESHARE',
+  DAILY: 'DAILY',
 };
 
 export const CLASS_TYPES = {

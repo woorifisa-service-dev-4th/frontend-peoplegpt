@@ -1,53 +1,71 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+import { POST_TYPES } from '../lib/constants';
+import { API_URL } from '../lib/constants';
 
-// API functions
-const API_BASE_URL = '/api';
-
-// Get posts by category - matches the backend endpoint
-const getPostsByCategory = async (category) => {
+// Get posts by category and filter
+const getPostsByCategory = async (category, filter = null) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/post/category/${category}`);
-    return response.data;
+    let url = `${API_URL}/post?category=${category}`;
+    if (filter) {
+      url += `&filter=${filter}`;
+    }
+    
+    const response = await axios.get(url);
+    console.log(response);
+    return response.data.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Failed to fetch posts');
   }
 };
 
-// Get single post by ID - matches the backend endpoint
+// Get single post by ID
 const getPostById = async (postId) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/post/${postId}`);
-    return response.data;
+    const response = await axios.get(`${API_URL}/post/${postId}`);
+    return response.data.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Failed to fetch post details');
   }
 };
 
-// Get comments for a post - needs to be implemented in backend
+// Get comments for a post
 const getCommentsByPostId = async (postId) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/post/${postId}/comments`);
-    return response.data;
+    const response = await axios.get(`/comment/list/${postId}`);
+    return response.data.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Failed to fetch comments');
   }
 };
 
-// Create a new post - matches the POST /post endpoint
-const createNewPost = async (postData) => {
+// Create a new QNA post
+const createQNAPost = async (postData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/post`, postData);
+    const response = await axios.post(`${API_URL}/post/create`, postData);
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Failed to create post');
   }
 };
 
-// Create a new comment - needs to be implemented in backend
-const createNewComment = async ({ postId, commentData }) => {
+// Create a new Mentor post (for CODESHARE or DAILY)
+const createMentorPost = async (postData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/post/${postId}/comment`, commentData);
+    const response = await axios.post(`${API_URL}/post/mentor/create`, postData);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to create mentor post');
+  }
+};
+
+// Create a new comment
+const createComment = async ({ postId, commentData }) => {
+  try {
+    const response = await axios.post(`/comment/create`, {
+      ...commentData,
+      postId: postId
+    });
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Failed to create comment');
@@ -55,10 +73,10 @@ const createNewComment = async ({ postId, commentData }) => {
 };
 
 // Custom hooks for components to use
-export const usePosts = (category) => {
+export const usePosts = (category, filter = null) => {
   return useQuery({
-    queryKey: ['posts', 'category', category],
-    queryFn: () => getPostsByCategory(category),
+    queryKey: ['posts', category, filter],
+    queryFn: () => getPostsByCategory(category, filter),
     enabled: !!category,
   });
 };
@@ -83,10 +101,16 @@ export const useCreatePost = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: createNewPost,
+    mutationFn: (postData) => {
+      if (postData.category === POST_TYPES.QNA) {
+        return createQNAPost(postData);
+      } else {
+        return createMentorPost(postData);
+      }
+    },
     onSuccess: (data, variables) => {
       // Invalidate relevant queries to refetch data
-      queryClient.invalidateQueries(['posts', 'category', variables.category]);
+      queryClient.invalidateQueries(['posts', variables.category]);
     },
   });
 };
@@ -95,7 +119,7 @@ export const useCreateComment = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: createNewComment,
+    mutationFn: createComment,
     onSuccess: (data, variables) => {
       // Invalidate comments for this post
       queryClient.invalidateQueries(['comments', variables.postId]);
