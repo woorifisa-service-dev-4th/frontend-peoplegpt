@@ -1,87 +1,53 @@
-// src/api/posts.js
-import useAuthStore from '../lib/auth';
+import axios from 'axios';
 
-const API_URL = 'YOUR_API_URL';
+const API_BASE_URL = '/api'; // Adjust based on your API configuration
 
-const getAuthHeaders = () => {
-  const token = useAuthStore.getState().token;
-  return {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
-  };
-};
-
-export const getPosts = async (type, classType) => {
+// Fetch posts by category
+export const getPostsByCategory = async (category) => {
   try {
-    const response = await fetch(
-      `${API_URL}/posts?type=${type}&classType=${classType}`,
-      {
-        headers: getAuthHeaders(),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch posts');
-    }
-
-    return await response.json();
+    const response = await axios.get(`${API_BASE_URL}/post/category/${category}`);
+    return response.data;
   } catch (error) {
-    console.error('Error fetching posts:', error);
-    throw error;
+    throw new Error(error.response?.data?.message || 'Failed to fetch posts');
   }
 };
 
+// Fetch a post by ID
+export const getPostById = async (postId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/post/${postId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch post details');
+  }
+};
+
+// Create a new post
 export const createPost = async (postData) => {
   try {
-    const response = await fetch(`${API_URL}/posts`, {
-      method: 'POST',
-      headers: getAuthHeaders(),
-      body: JSON.stringify(postData),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to create post');
-    }
-
-    return await response.json();
+    const response = await axios.post(`${API_BASE_URL}/post`, postData);
+    return response.data;
   } catch (error) {
-    console.error('Error creating post:', error);
-    throw error;
+    throw new Error(error.response?.data?.message || 'Failed to create post');
   }
 };
 
+// Fetch comments for a post
 export const getComments = async (postId) => {
   try {
-    const response = await fetch(`${API_URL}/posts/${postId}/comments`, {
-      headers: getAuthHeaders(),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch comments');
-    }
-
-    return await response.json();
+    const response = await axios.get(`${API_BASE_URL}/post/${postId}/comments`);
+    return response.data;
   } catch (error) {
-    console.error('Error fetching comments:', error);
-    throw error;
+    throw new Error(error.response?.data?.message || 'Failed to fetch comments');
   }
 };
 
+// Create a new comment
 export const createComment = async (postId, commentData) => {
   try {
-    const response = await fetch(`${API_URL}/posts/${postId}/comments`, {
-      method: 'POST',
-      headers: getAuthHeaders(),
-      body: JSON.stringify(commentData),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to create comment');
-    }
-
-    return await response.json();
+    const response = await axios.post(`${API_BASE_URL}/post/${postId}/comment`, commentData);
+    return response.data;
   } catch (error) {
-    console.error('Error creating comment:', error);
-    throw error;
+    throw new Error(error.response?.data?.message || 'Failed to create comment');
   }
 };

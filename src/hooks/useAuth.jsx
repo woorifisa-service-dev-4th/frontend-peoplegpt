@@ -1,35 +1,3 @@
-// // src/hooks/useAuth.js
-// import { useNavigate } from 'react-router-dom';
-
-// export const useAuth = () => {
-//   const navigate = useNavigate();
-
-//   return {
-//     // 항상 인증된 상태로 처리
-//     isAuthenticated: true,
-    
-//     // 테스트용 더미 유저 데이터
-//     user: {
-//       id: 1,
-//       name: "Test User",
-//       email: "test@example.com",
-//       role: "user"
-//     },
-
-//     // 로그인 함수 (현재는 바로 대시보드로 이동)
-//     login: async (credentials) => {
-//       console.log('Login credentials:', credentials);
-//       navigate('/dashboard/qna');
-//     },
-
-//     // 로그아웃 함수 (현재는 바로 로그인 페이지로 이동)
-//     logout: () => {
-//       console.log('Logout called');
-//       navigate('/login');
-//     }
-//   };
-// };
-
 
 // src/hooks/useAuth.js
 import { useMutation } from '@tanstack/react-query';
